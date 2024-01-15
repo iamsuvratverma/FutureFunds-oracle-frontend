@@ -1,1 +1,1 @@
-Term Deposit Prediction | 
+Term Deposit Prediction | https://iamsuvratverma.github.io/FutureFunds-oracle/
