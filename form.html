@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Form</title>
+    <!-- bootstrap css -->
+    <link rel="stylesheet" type="text/css" href='css/bootstrap.min.css'>
+    <!-- style css -->
+    <link rel="stylesheet" type="text/css" href='css/style.css'>
+    <style>
+        .padding {
+            padding-top: 30px;
+        }
+
+        form {
+            font-size: 16px;
+            background-color: #ffffff;
+            padding: 40px 80px 26px 66px;
+            border-radius: 0;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            margin: auto;
+            margin-bottom: 50px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-gap: 70px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .drop {
+            width: calc(110% - 20px);
+            margin-bottom: 30px;
+            box-sizing: border-box;
+            border: 1px solid #b4b2b2;
+            border-radius: 0;
+            font-size: 14px;
+        }
+
+        input[type="radio"],
+        input[type="checkbox"] {
+            margin-right: 4px;
+
+        }
+
+        button {
+            background-color: #1b5a8d;
+            color: #fff;
+            padding: 15px;
+            border: none;
+            border-radius: 0;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .submit_bt {
+            margin: 22px 0px 0px 100px;
+            width: 100px;
+            height: auto;
+            text-align: center;
+            border-radius: 40px;
+            padding: 10px 20px 10px 20px;
+        }
+
+        /* Additional Styling for Radio Group */
+        .custom-container {
+            --s: 19px;
+            /* control the size */
+            --g: 10px;
+            /* the gap */
+            --c: #1b5a8d;
+            /* the active color */
+            display: grid;
+            grid-auto-rows: 1fr;
+            position: relative;
+        }
+
+        .custom-container:before {
+            content: "";
+            position: absolute;
+            height: calc(var(--s)/2);
+            left: calc(var(--s)/4 + var(--_x, 0px));
+            top: calc(var(--s)/4);
+            background: var(--c);
+            border-radius: 50%;
+            aspect-ratio: 1;
+            transition: .4s, left cubic-bezier(.1, -2000, .7, -2000) .4s;
+        }
+
+        .custom-label {
+            display: inline-flex;
+            line-height: var(--s);
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .custom-input {
+            height: var(--s);
+            aspect-ratio: 1;
+            border: calc(var(--s)/8) solid var(--_c, #939393);
+            border-radius: 50%;
+            outline-offset: calc(var(--s)/10);
+            padding: calc(var(--s)/8);
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            cursor: pointer;
+            font-size: inherit;
+            margin: 0;
+            transition: .3s;
+        }
+
+        .custom-input:checked {
+            --_c: var(--c);
+        }
+
+        .custom-container:not(:has(.custom-input:checked)):before {
+            --_i: -1;
+            opacity: 0;
+        }
+
+        .custom-container:has(.custom-input:checked):before {
+            opacity: 1;
+            transform: translateY(calc(var(--_i)*(var(--s) + var(--g))));
+        }
+
+        .custom-container:has(.custom-label:nth-child(1) .custom-input:checked):before {
+            --_i: 0;
+            --_x: .02px;
+        }
+
+        .custom-container:has(.custom-label:nth-child(2) .custom-input:checked):before {
+            --_i: 1;
+            --_x: .04px;
+        }
+
+        .custom-container:has(.custom-label:nth-child(3) .custom-input:checked):before {
+            --_i: 2;
+            --_x: .06px;
+        }
+
+        .custom-input:disabled {
+            background: linear-gradient(#939393 0 0) 50%/100% 20% no-repeat content-box;
+            opacity: .5;
+            cursor: not-allowed;
+        }
+
+        @media print {
+            .custom-input[type=radio] {
+                -webkit-appearance: auto;
+                -moz-appearance: auto;
+                appearance: auto;
+                background: none;
+            }
+        }
+
+        @supports not selector(:has(*)) {
+            .custom-container:before {
+                display: none;
+            }
+
+            .custom-input:checked {
+                --_c: var(--c);
+                background: var(--c) content-box;
+            }
+        }
+
+        /* Additional Styling for Text Inputs */
+        input[type="text"] {
+            width: calc(111% - 24px);
+            margin-right: 0;
+            margin-bottom: 30px;
+        }
+
+        /* Responsive Layout Adjustments */
+        @media (max-width: 768px) {
+            form {
+                grid-template-columns: 1fr;
+            }
+        }
+
+
+        /* Style the modal container */
+        /* Style the blurred background element */
+        .blurred-background {
+            position: fixed;
+            z-index: 0;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backdrop-filter: blur(1px);
+            /* Add background blur effect */
+        }
+
+        /* Style the modal container */
+        .modal {
+            color: rgb(255, 255, 255);
+            font-size: 20px;
+            display: none;
+            position: fixed;
+            z-index: 1;
+            width: 25%;
+            height: 13%;
+            overflow: auto;
+            background-color: #236fad;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        /* Style the close button */
+        .close {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #333;
+        }
+
+        .name {
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #999;
+            border-radius: 1px;
+            font-size: 15px;
+            margin-bottom: 10px;
+            background-color: #f6f6f6;
+        }
+
+        .name::placeholder {
+            font-weight: 100;
+        }
+
+        .name[name="first_name"]:valid {
+            font-weight: normal;
+            /* Change font weight when the input is valid */
+        }
+
+        /* #call duration */
+        /* Style the input field */
+        .call {
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #999;
+            border-radius: 1px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            background-color: #f6f6f6;
+        }
+
+        /* Style placeholder text */
+        .call::placeholder {
+            color: #999;
+        }
+
+        /* Style for minimum and maximum values */
+        .call:invalid {
+            border-color: #f3a8a8;
+        }
+
+        /* Style for valid input */
+        .call:valid {
+            border-color: #999;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!--header section start -->
+    <div class="header_section header_bg">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="logo"><a></a></div>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="form.html">Forecast</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Contact Us</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+
+    <div class="services_section padding">
+        <div class="container">
+            <div class="row">
+                <div>
+                    <h1 class="services_taital">Experiment with it</h1>
+                    <h1>Ensure that the loan has not already been subscribed</h1>
+                    <p class="services_text">After implementing and testing various models, we are now prepared for
+                        predictions. We're using the module with the highest accuracy score, ensuring our predictions
+                        are reliable
+                        and accurate.
+                    </p>
+                </div>
+                <form action="result">
+                    <!-- Column 1 -->
+                    <div>
+                        <div>
+                            <label for="">Full Name</label>
+                            <input type="text" class="name" name="first_name" required placeholder="Enter your name">
+                        </div>
+                        <div class="dropdown-section">
+                            <label for="dropdown3">Job</label>
+                            <select class="drop" id="" name="q10" required>
+                                <option value="option5"> select</option>
+                                <option value="0">admin </option>
+                                <option value="1">blue-collar
+                                </option>
+                                <option value="7">services
+                                </option>
+                                <option value="9">technician
+                                </option>
+                                <option value="5">retired
+                                </option>
+                                <option value="4">management
+                                </option>
+                                <option value="11">unknown
+                                </option>
+                                <option value="2">entrepreneur</option>
+                                <option value="3">housemaid
+                                </option>
+                                <option value="6">self-employed
+                                </option>
+                                <option value="8">student
+                                </option>
+                                <option value="10">unemployed
+                                </option>
+                            </select>
+                        </div>
+
+                        <label for="dropdown1">Education</label>
+                        <select id="dropdown1" class="drop" name="q9" required>
+                            <option value="option1">Select
+                            </option>
+                            <option value="3">high.school
+                            </option>
+                            <option value="5">professional.course
+                            </option>
+                            <option value="2">basic.9y
+                            </option>
+                            <option value="0">basic.4y
+                            </option>
+                            <option value="6">university.degree
+                            </option>
+                            <option value="7">unknown
+                            </option>
+                            <option value="1">basic.6y
+
+                            </option>
+                        </select>
+                        <label for="dropdown2">Consumer Price Index</label>
+                        <select id="dropdown2" name="q6" class="drop" required>
+                            <option value="">Select
+                            </option>
+                            <option value="93.994">93.994
+                            </option>
+                            <option value="94.465">94.465
+                            </option>
+                            <option value="92.963">92.963
+                            </option>
+                            <option value="93.876">93.876
+                            </option>
+                        </select>
+
+
+                        <label>Default Credit</label>
+                        <div class="custom-container">
+                            <label class="custom-label"><input class="custom-input" type="radio" name="q11" value="0"
+                                    required>
+                                No</label>
+                            <label class="custom-label"><input class="custom-input" type="radio" name="q11" value="1"
+                                    required>
+                                unknown</label>
+                        </div>
+                    </div>
+
+                    <!-- Column 2 -->
+                    <div>
+                        <div>
+                            <div class="dropdown-section">
+                                <label for="dropdown2">Previous Cont. Days</label>
+                                <select id="dropdown2" name="q4" class="drop" required>
+                                    <option>Select
+                                    </option>
+                                    <option value="0">0</option>
+                                    <option value="1">1
+                                    </option>
+                                    <option value="2">2
+                                    </option>
+                                    <option value="4">4
+                                    </option>
+                                </select>
+                            </div>
+
+                            <label for="dropdown2">Prev. Marketing Campaign</label>
+                            <select id="dropdown2" name="q14" class="drop" required>
+                                <option>Select
+                                </option>
+                                <option value="2">Success</option>
+                                <option value="0">Failure
+                                </option>
+                                <option value="1">nonexistent
+                                </option>
+                            </select>
+
+                            <label for="dropdown2">Employment Variation Rate</label>
+                            <select id="dropdown2" name="q5" class="drop" required>
+                                <option>Select
+                                </option>
+                                <option value="1.1">1.1
+                                </option>
+                                <option value="1.4">1.4
+                                </option>
+                                <option value="-2.9">- 2.9
+                                </option>
+                                <option value="-1.8">-1.8
+                                </option>
+                                <option value="-3.4">-3.4
+                                </option>
+                            </select>
+
+                            <div class="dropdown-section">
+                                <label for="dropdown3">Consumer Confidence Index
+                                </label>
+                                <select id="dropdown3" name="q7" class="drop" required>
+                                    <option value="">Select
+                                    </option>
+                                    <option value="-36.4">-36.4
+                                    </option>
+                                    <option value="-41.8">-41.8
+                                    </option>
+                                    <option value="-46.2">-46.2
+                                    </option>
+                                    <option value="-40">-40
+                                    </option>
+                                    <option value="-47.1">-47.1
+                                    </option>
+                                    <option value="-40.8">-40.8
+                                </select>
+                            </div>
+
+
+                            <label>Housing Loan</label>
+                            <div class="custom-container">
+                                <label class="custom-label"><input value="0" class="custom-input" type="radio"
+                                        name="q12" required>
+                                    No</label>
+                                <label class="custom-label"><input value="2" class="custom-input" type="radio"
+                                        name="q12" required>Yes</label>
+                                <label class="custom-label"><input value="1" class="custom-input" type="radio"
+                                        name="q12" required>
+                                    unknown</label>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Column 3 -->
+                    <div>
+                        <div>
+                            <label for="dropdown2">Age (yrs.)</label>
+                            <select id="dropdown2" name="q1" class="drop" required>
+                                <option value="option1">Select
+                                </option>
+                                <option value="18">18</option>
+                                <option value="45">45
+                                </option>
+                                <option value="48">48
+                                </option>
+                                <option value="38">38
+                                </option>
+                                <option value="55">55
+                                </option>
+                                <option value="27">27
+                                </option>
+                                <option value="31">31</option>
+                                <option value="34">34
+                                </option>
+                                <option value="35">35</option>
+                                <option value="36">36
+                                </option>
+                            </select>
+                            <label for="dropdown2">Last contact days </label>
+                            <select id="dropdown2" name="q3" class="drop" required>
+                                <option value="option1">Select
+                                </option>
+                                <option value="3">3</option>
+                                <option value="4">4
+                                </option>
+                                <option value="5">5
+                                </option>
+                                <option value="13">13
+                                </option>
+                                <option value="44">14
+                                </option>
+                                <option value="999">999 (no)</option>
+                            </select>
+                            <div class="dropdown-section">
+                                <label for="dropdown3">No.of employees
+                                </label>
+                                <select id="dropdown3" name="q8" class="drop" required>
+                                    <option>Select
+                                    </option>
+                                    <option value="5191">5191
+                                    </option>
+                                    <option value="5076">5076
+                                    </option>
+                                    <option value="5196">5196
+                                    </option>
+                                    <option value="5099">5099
+                                    </option>
+                                    <option value="4964">4964
+                                    </option>
+                                    <option value="5009"> 5009
+                                </select>
+                            </div>
+
+                            <label for="text1">Duration</label>
+                            <input class="call" type="number" id="text1" placeholder="Call duartion in sec" name="q2"
+                                min="21" max="1500" required>
+
+                            <label class="mt-3">Personal Loan</label>
+                            <div class="custom-container">
+                                <label class="custom-label"><input value="0" class="custom-input" type="radio"
+                                        name="q13" required>
+                                    No</label>
+                                <label class="custom-label"><input value="2" class="custom-input" type="radio"
+                                        name="q13" required>Yes</label>
+                                <label class="custom-label"><input value="1" class="custom-input" type="radio"
+                                        name="q13" required>
+                                    unknown</label>
+                            </div>
+                            <button type="submit" class="submit_bt">Submit</button>
+                        </div>
+                    </div>
+                    <!-- Submit Button -->
+                </form>
+            </div>
+        </div>
+
+        <!-- Javascript files-->
+        <script src='js/jquery.min.js'></script>
+        <script src='js/popper.min.js'></script>
+        <script src='js/bootstrap.bundle.min.js'></script>
+        <script src='js/jquery-3.0.0.min.js'></script>
+        <script src='js/plugin.js'></script>
+        <!-- sidebar -->
+        <script src='js/jquery.mCustomScrollbar.concat.min.js'></script>
+        <script src='js/custom.js'></script>
+        <!-- javascript -->
+        <script src='js/owl.carousel.js'></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+        <script>
+            window.watsonAssistantChatOptions = {
+                integrationID: "093d6a92-2f7a-4b75-a2a3-755b4cfaf169", // The ID of this integration.
+                region: "au-syd", // The region your integration is hosted in.
+                serviceInstanceID: "e707240e-ff5b-4428-a67c-268d2175c7dc", // The ID of your service instance.
+                onLoad: async (instance) => { await instance.render(); }
+            };
+            setTimeout(function () {
+                const t = document.createElement('script');
+                t.src = "https://web-chat.global.assistant.watson.appdomain.cloud/versions/" + (window.watsonAssistantChatOptions.clientVersion || 'latest') + "/WatsonAssistantChatEntry.js";
+                document.head.appendChild(t);
+            });
+        </script>
+
+
+        <div class="footer_section margin_topform">
+            <div class="copyright_text">
+                FD Prediction | &copy; 2023 FutureFunds-Oracle. All Rights Reserved
+            </div>
+        </div>
+
+</body>
+
+</html>
